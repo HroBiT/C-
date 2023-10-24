@@ -170,11 +170,16 @@ namespace Program
                         // Edycja produktu
                         try
                         {
-                            Console.WriteLine("Podaj indeks magazynu, w którym chcesz edytować produkt:");
-                            int indeksMagazynuDoEdycjiProduktu = Convert.ToInt32(Console.ReadLine());
-                            if (indeksMagazynuDoEdycjiProduktu >= 0 && indeksMagazynuDoEdycjiProduktu < magazyny.Count)
+                            Console.WriteLine("Dostępne produkty w ogólnym składzie:");
+                            for (int i = 0; i < magazyn.PobierzProdukty().Count; i++)
                             {
-                                Magazyn magazynDoEdycjiProduktu = magazyny[indeksMagazynuDoEdycjiProduktu];
+                                Console.WriteLine($"{i}: {magazyn.PobierzProdukty()[i].NazwaProduktu}");
+                            }
+                            Console.WriteLine("Podaj indeks magazynu, w którym chcesz edytować produkt:");
+                            int IMDEP = Convert.ToInt32(Console.ReadLine()); //indeks magazynu Do Edycji Produktu
+                            if (IMDEP >= 0 && IMDEP < magazyny.Count) 
+                            {
+                                Magazyn magazynDoEdycjiProduktu = magazyny[IMDEP];
                                 Console.WriteLine("Podaj nazwę produktu do edycji:");
                                 string nazwaProduktuDoEdycji = Console.ReadLine();
                                 Produkt produktDoEdycji = magazynDoEdycjiProduktu.WyszukajProdukt(nazwaProduktuDoEdycji);
@@ -203,6 +208,7 @@ namespace Program
                         // Usuwanie produktu
                         try
                         {
+
                             Console.WriteLine("Dostępne produkty w ogólnym składzie:");
                             for (int i = 0; i < magazyn.PobierzProdukty().Count; i++)
                             {
