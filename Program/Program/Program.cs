@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Program
 {
@@ -30,7 +31,7 @@ namespace Program
 
                 if (int.TryParse(wybor, out liczba))
                 {
-                    if (liczba > 0 && liczba <= 5)
+                    if (liczba > 0 && liczba <= 9)
                     {
                         liczba = Convert.ToInt32(wybor);
                     }
@@ -68,12 +69,19 @@ namespace Program
                         // Edycja magazynu
                         try
                         {
-                            Console.WriteLine("Podaj indeks magazynu do edycji:");
-                            int indeksMagazynuDoEdycji = Convert.ToInt32(Console.ReadLine());
-
-                            if (indeksMagazynuDoEdycji >= 0 && indeksMagazynuDoEdycji < magazyny.Count)
+                            Console.WriteLine("Dostępne magazyny:");
+                            for (int i = 0; i < magazyny.Count; i++)
                             {
-                                Magazyn magazynDoEdycji = magazyny[indeksMagazynuDoEdycji];
+                                Console.WriteLine($"{i}: {magazyny[i].NazwaMagazynu}");
+                            }
+
+
+                            Console.WriteLine("Podaj indeks magazynu do edycji:");
+                            int IMDE = Convert.ToInt32(Console.ReadLine()); //indeks Magazynu Do Edycji
+
+                            if (IMDE >= 0 && IMDE < magazyny.Count)
+                            {
+                                Magazyn magazynDoEdycji = magazyny[IMDE];
                                 Console.WriteLine("Podaj nowy adres magazynu \n");
                                 Adres nowyAdres = WprowadzAdres();
                                 magazynDoEdycji.AdresMagazynu = nowyAdres;
@@ -93,12 +101,18 @@ namespace Program
                         break;
                     case 3:
                         // Usuwanie magazynu
-                        Console.WriteLine("Podaj indeks magazynu do usunięcia:");
-                        int indeksMagazynuDoUsuniecia = Convert.ToInt32(Console.ReadLine());
-
-                        if (indeksMagazynuDoUsuniecia >= 0 && indeksMagazynuDoUsuniecia < magazyny.Count)
+                        Console.WriteLine("Dostępne magazyny:");
+                        for (int i = 0; i < magazyny.Count; i++)
                         {
-                            magazyny.RemoveAt(indeksMagazynuDoUsuniecia);
+                            Console.WriteLine($"{i}: {magazyny[i].NazwaMagazynu}");
+                        }
+
+                        Console.WriteLine("Podaj indeks magazynu do usunięcia:");
+                        int IMDU = Convert.ToInt32(Console.ReadLine());
+
+                        if (IMDU >= 0 && IMDU < magazyny.Count) //indeks Magazynu Do Usuniecia
+                        {
+                            magazyny.RemoveAt(IMDU);
                             Console.WriteLine("Magazyn został usunięty.");
                         }
                         else
@@ -142,9 +156,9 @@ namespace Program
                             wprowadzonaCena >= 0 &&
                             !string.IsNullOrWhiteSpace(nowyProdukt.Opis))
                         {
-                            // Dodaj nowy produkt do ogólnego składu produktów
+                            // Dodaj nowy produkt do składu produktów
                             magazyn.DodajProdukt(nowyProdukt);
-                            Console.WriteLine("Produkt został dodany do ogólnego składu produktów.");
+                            Console.WriteLine("Produkt został dodany do składu produktów.");
                         }
                         else
                         {
@@ -152,114 +166,178 @@ namespace Program
                         }
                         break;
 
-                    case 7: // Edycja produktu bez wyboru indeksu magazynu 
-                        Console.WriteLine("Dostępne produkty w ogólnym składzie:"); 
-                        for (int i = 0; i < magazyn.PobierzProdukty().Count; i++) 
-                        { Console.WriteLine($"{i}: {magazyn.PobierzProdukty()[i].NazwaProduktu}"); }
-                        Console.WriteLine("Wybierz indeks produktu, który chcesz edytować:"); int indeksProduktuDoEdycji; while (!int.TryParse(Console.ReadLine(), out indeksProduktuDoEdycji) || indeksProduktuDoEdycji < 0 || indeksProduktuDoEdycji >= magazyn.PobierzProdukty().Count) { Console.WriteLine("Nieprawidłowy indeks produktu. Wprowadź poprawną wartość:"); } Produkt produktDoEdycji = magazyn.PobierzProdukty()[indeksProduktuDoEdycji]; Console.WriteLine("Podaj nową nazwę produktu:"); produktDoEdycji.NazwaProduktu = Console.ReadLine(); Console.WriteLine("Produkt został edytowany."); break;
-
+                    case 5:
+                        // Edycja produktu
+                        try
+                        {
+                            Console.WriteLine("Podaj indeks magazynu, w którym chcesz edytować produkt:");
+                            int indeksMagazynuDoEdycjiProduktu = Convert.ToInt32(Console.ReadLine());
+                            if (indeksMagazynuDoEdycjiProduktu >= 0 && indeksMagazynuDoEdycjiProduktu < magazyny.Count)
+                            {
+                                Magazyn magazynDoEdycjiProduktu = magazyny[indeksMagazynuDoEdycjiProduktu];
+                                Console.WriteLine("Podaj nazwę produktu do edycji:");
+                                string nazwaProduktuDoEdycji = Console.ReadLine();
+                                Produkt produktDoEdycji = magazynDoEdycjiProduktu.WyszukajProdukt(nazwaProduktuDoEdycji);
+                                if (produktDoEdycji != null)
+                                {
+                                    Console.WriteLine("Podaj nową nazwę produktu:");
+                                    produktDoEdycji.NazwaProduktu = Console.ReadLine();
+                                    Console.WriteLine("Produkt został edytowany.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Produkt nie istnieje w wybranym magazynie.");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Nieprawidłowy indeks magazynu.");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.Write("Cos nie tak");
+                        }
+                        break;
                     case 6:
                         // Usuwanie produktu
-                        Console.WriteLine("Podaj nazwę produktu do usunięcia:");
-                        string nazwaProduktuDoUsuniecia = Console.ReadLine();
-                        Produkt produktDoUsuniecia = null;
-
-                        foreach (var magazyn in magazyny)
+                        try
                         {
-                            produktDoUsuniecia = magazyn.WyszukajProdukt(nazwaProduktuDoUsuniecia);
-                            if (produktDoUsuniecia != null)
+                            Console.WriteLine("Dostępne produkty w ogólnym składzie:");
+                            for (int i = 0; i < magazyn.PobierzProdukty().Count; i++)
                             {
-                                break;
+                                Console.WriteLine($"{i}: {magazyn.PobierzProdukty()[i].NazwaProduktu}");
                             }
-                        }
 
-                        if (produktDoUsuniecia != null)
-                        {
+
+                            Console.WriteLine("Podaj nazwę produktu do usunięcia:");
+                            string NPDU = Console.ReadLine(); //nazwaProduktuDoUsuniecia
+                            Produkt PDU = null; //produktDoUsuniecia
+
                             foreach (var magazyn in magazyny)
                             {
-                                magazyn.UsunProdukt(produktDoUsuniecia);
+                                PDU = magazyn.WyszukajProdukt(NPDU);
+                                if (PDU != null)
+                                {
+                                    break;
+                                }
                             }
-                            Console.WriteLine("Produkt został usunięty.");
+
+                            if (PDU != null)
+                            {
+                                foreach (var magazyn in magazyny)
+                                {
+                                    magazyn.UsunProdukt(PDU);
+                                }
+                                Console.WriteLine("Produkt został usunięty.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Produkt nie istnieje.");
+                            }
                         }
-                        else
+                        catch (Exception e)
                         {
-                            Console.WriteLine("Produkt nie istnieje.");
+                            Console.WriteLine("cos nie tak");
                         }
                         break;
                     case 7:
                         // Dodawanie produktu do wybranego magazynu
-                        Console.WriteLine("Dostępne produkty w ogólnym składzie:");
-                        for (int i = 0; i < magazyn.PobierzProdukty().Count; i++)
+                        try
                         {
-                            Console.WriteLine($"{i}: {magazyn.PobierzProdukty()[i].NazwaProduktu}");
-                        }
-
-                        Console.WriteLine("Wybierz indeks produktu, który chcesz dodać do magazynu:");
-                        int indeksProduktuDoDodania;
-                        
-                        // Probowanie do skutku podania odpowiedniej wartosci i odpowiedniego indexu
-                        while (!int.TryParse(Console.ReadLine(), out indeksProduktuDoDodania) || indeksProduktuDoDodania < 0 || indeksProduktuDoDodania >= magazyn.PobierzProdukty().Count)
-                        {
-                            Console.WriteLine("Nieprawidłowy indeks produktu. Wprowadź poprawną wartość:");
-                        }
-
-                        // Wybrany produkt z ogólnego składu
-                        Produkt wybranyProdukt = magazyn.PobierzProdukty()[indeksProduktuDoDodania];
-
-                        // Wybór magazynu, do którego chcemy dodać produkt
-                        Console.WriteLine("Dostępne magazyny:");
-                        for (int i = 0; i < magazyny.Count; i++)
-                        {
-                            Console.WriteLine($"{i}: {magazyny[i].NazwaMagazynu}");
-                        }
-
-                        Console.WriteLine("Wybierz indeks magazynu, do którego chcesz dodać produkt:");
-                        int indeksMagazynuDoDodania;
-                        while (!int.TryParse(Console.ReadLine(), out indeksMagazynuDoDodania) || indeksMagazynuDoDodania < 0 || indeksMagazynuDoDodania >= magazyny.Count)
-                        {
-                            Console.WriteLine("Nieprawidłowy indeks magazynu. Wprowadź poprawną wartość:");
-                        }
-
-                        // Wybrany magazyn, do którego chcemy dodać produkt
-                        Magazyn wybranyMagazyn = magazyny[indeksMagazynuDoDodania];
-
-                        // Dodanie wybranego produktu do wybranego magazynu
-                        wybranyMagazyn.DodajProdukt(wybranyProdukt);
-                        Console.WriteLine($"Produkt {wybranyProdukt.NazwaProduktu} został dodany do magazynu {wybranyMagazyn.NazwaMagazynu}.");
-                        break;
-                    case 8:
-                        // Usuwanie produktu z magazynu
-                        Console.WriteLine("Podaj indeks magazynu, z którego chcesz usunąć produkt:");
-                        if (int.TryParse(Console.ReadLine(), out int IndexMagazynDUP) &&
-                            IndexMagazynDUP >= 0 && IndexMagazynDUP < magazyny.Count)
-                        {
-                            Magazyn MagazynDUP = magazyny[IndexMagazynDUP];
-                            Console.WriteLine("Lista indeksów produktów w magazynie:");
-
-                            // Uzyskanie listy produktów z magazynu
-                            List<Produkt> produktyWMagazynie = MagazynDUP.PobierzProdukty();
-
-                            for (int i = 0; i < produktyWMagazynie.Count; i++)
+                            if (magazyny.Count > 0 && magazyn.PobierzProdukty().Count > 0) // sprawdzanie czy sa podane produkty oraz magazyny
                             {
-                                Console.WriteLine($"[{i}] {produktyWMagazynie[i].NazwaProduktu}");
-                            }
+                                Console.WriteLine("Dostępne produkty w ogólnym składzie:");
+                                for (int i = 0; i < magazyn.PobierzProdukty().Count; i++)
+                                {
+                                    Console.WriteLine($"{i}: {magazyn.PobierzProdukty()[i].NazwaProduktu}");
+                                }
 
-                            Console.WriteLine("Podaj indeks produktu do usunięcia:");
-                            if (int.TryParse(Console.ReadLine(), out int indeksProduktuDoUsuniecia) &&
-                                indeksProduktuDoUsuniecia >= 0 && indeksProduktuDoUsuniecia < produktyWMagazynie.Count)
-                            {
-                                Produkt produktDoUsunieciaZMagazynu = produktyWMagazynie[indeksProduktuDoUsuniecia];
-                                MagazynDUP.UsunProdukt(produktDoUsunieciaZMagazynu);
-                                Console.WriteLine("Produkt został usunięty z magazynu.");
+                                Console.WriteLine("Wybierz indeks produktu, który chcesz dodać do magazynu:");
+                                int IPDD; // IndexProdDoDodania
+
+                                // Probowanie do skutku podania odpowiedniej wartosci i odpowiedniego indexu
+                                while (!int.TryParse(Console.ReadLine(), out IPDD) || IPDD < 0 || IPDD >= magazyn.PobierzProdukty().Count)
+                                {
+                                    Console.WriteLine("Nieprawidłowy indeks produktu. Wprowadź poprawną wartość:");
+                                }
+
+                                // Wybrany produkt z ogólnego składu
+                                Produkt wybranyProdukt = magazyn.PobierzProdukty()[IPDD];
+
+                                // Wybór magazynu, do którego chcemy dodać produkt
+                                Console.WriteLine("Dostępne magazyny:");
+                                for (int i = 0; i < magazyny.Count; i++)
+                                {
+                                    Console.WriteLine($"{i}: {magazyny[i].NazwaMagazynu}");
+                                }
+
+                                Console.WriteLine("Wybierz indeks magazynu, do którego chcesz dodać produkt:");
+                                int IMDD; //indeksMagazynuDoDodania
+                                while (!int.TryParse(Console.ReadLine(), out IMDD) || IMDD < 0 || IMDD >= magazyny.Count)
+                                {
+                                    Console.WriteLine("Nieprawidłowy indeks magazynu. Wprowadź poprawną wartość:");
+
+                                }
+
+                                // Wybrany magazyn, do którego chcemy dodać produkt
+                                Magazyn wybranyMagazyn = magazyny[IMDD];
+
+                                // Dodanie wybranego produktu do wybranego magazynu
+                                wybranyMagazyn.DodajProdukt(wybranyProdukt);
+                                Console.WriteLine($"Produkt {wybranyProdukt.NazwaProduktu} został dodany do magazynu {wybranyMagazyn.NazwaMagazynu}.");
                             }
                             else
                             {
-                                Console.WriteLine("Nieprawidłowy indeks produktu.");
+                                Console.WriteLine("Nie posiadasz magazynow/produktow");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("cos nie tak");
+                        }
+                        break;
+
+                    case 8:
+                        // Usuwanie produktu z magazynu
+                        if (magazyny.Count() > 0) // sparawdzanie czy sa magazyny
+                        {
+                            Console.WriteLine("Podaj indeks magazynu, z którego chcesz usunąć produkt:");
+                            if (int.TryParse(Console.ReadLine(), out int IMDUP) &&
+                                IMDUP >= 0 && IMDUP < magazyny.Count) // Indeks Magazynu Do Usuniecia Produktu
+                            {
+                                Magazyn MDUP = magazyny[IMDUP];  // Magazyn do usuniecia produktu
+                                Console.WriteLine("Lista indeksów produktów w magazynie:");
+
+                                // Uzyskanie listy produktów z magazynu
+                                List<Produkt> PWM = MDUP.PobierzProdukty(); // Produkty W Magazynie
+
+                                for (int i = 0; i < PWM.Count; i++)
+                                {
+                                    Console.WriteLine($"[{i}] {PWM[i].NazwaProduktu}");
+                                }
+
+                                Console.WriteLine("Podaj indeks produktu do usunięcia:");
+                                if (int.TryParse(Console.ReadLine(), out int IPDU) &&
+                                    IPDU >= 0 && IPDU < PWM.Count) // indeks Produktu Do Usuniecia
+                                {
+                                    Produkt PDUZMagazynu = PWM[IPDU];
+                                    MDUP.UsunProdukt(PDUZMagazynu);
+                                    Console.WriteLine("Produkt został usunięty z magazynu.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Nieprawidłowy indeks produktu.");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Nieprawidłowy indeks magazynu.");
                             }
                         }
                         else
                         {
-                            Console.WriteLine("Nieprawidłowy indeks magazynu.");
+                            Console.WriteLine("Cos nie tak");
                         }
                         break;
 
@@ -273,7 +351,8 @@ namespace Program
                         break;
                 }
 
-                System.Threading.Thread.Sleep(500);
+
+                System.Threading.Thread.Sleep(800);
                 Console.Clear();
 
                 // Metoda do wprowadzania danych adresu
