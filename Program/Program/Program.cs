@@ -153,33 +153,42 @@ namespace Program
                         break;
 
                     case 5:
-                        // Edycja produktu
-                        Console.WriteLine("Podaj indeks magazynu, w którym chcesz edytować produkt:");
-                        int indeksMagazynuDoEdycjiProduktu = Convert.ToInt32(Console.ReadLine());
+                    
+    // Edycja produktu
+    Console.WriteLine("Dostępne magazyny:");
+    for (int i = 0; i < magazyny.Count; i++)
+    {
+        Console.WriteLine($"{i}: {magazyny[i].NazwaMagazynu}");
+    }
 
-                        if (indeksMagazynuDoEdycjiProduktu >= 0 && indeksMagazynuDoEdycjiProduktu < magazyny.Count)
-                        {
-                            Magazyn magazynDoEdycjiProduktu = magazyny[indeksMagazynuDoEdycjiProduktu];
-                            Console.WriteLine("Podaj nazwę produktu do edycji:");
-                            string nazwaProduktuDoEdycji = Console.ReadLine();
-                            Produkt produktDoEdycji = magazynDoEdycjiProduktu.WyszukajProdukt(nazwaProduktuDoEdycji);
+    Console.WriteLine("Wybierz indeks magazynu, w którym chcesz edytować produkt:");
+    int indeksMagazynuDoEdycjiProduktu;
+    while (!int.TryParse(Console.ReadLine(), out indeksMagazynuDoEdycjiProduktu) || indeksMagazynuDoEdycjiProduktu < 0 || indeksMagazynuDoEdycjiProduktu >= magazyny.Count)
+    {
+        Console.WriteLine("Nieprawidłowy indeks magazynu. Wprowadź poprawną wartość:");
+    }
 
-                            if (produktDoEdycji != null)
-                            {
-                                Console.WriteLine("Podaj nową nazwę produktu:");
-                                produktDoEdycji.NazwaProduktu = Console.ReadLine();
-                                Console.WriteLine("Produkt został edytowany.");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Produkt nie istnieje w wybranym magazynie.");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Nieprawidłowy indeks magazynu.");
-                        }
-                        break;
+    Magazyn magazynDoEdycjiProduktu = magazyny[indeksMagazynuDoEdycjiProduktu];
+
+    Console.WriteLine("Dostępne produkty w wybranym magazynie:");
+    for (int i = 0; i < magazynDoEdycjiProduktu.PobierzProdukty().Count; i++)
+    {
+        Console.WriteLine($"{i}: {magazynDoEdycjiProduktu.PobierzProdukty()[i].NazwaProduktu}");
+    }
+
+    Console.WriteLine("Wybierz indeks produktu do edycji:");
+    int indeksProduktuDoEdycji;
+    while (!int.TryParse(Console.ReadLine(), out indeksProduktuDoEdycji) || indeksProduktuDoEdycji < 0 || indeksProduktuDoEdycji >= magazynDoEdycjiProduktu.PobierzProdukty().Count)
+    {
+        Console.WriteLine("Nieprawidłowy indeks produktu. Wprowadź poprawną wartość:");
+    }
+
+    Produkt produktDoEdycji = magazynDoEdycjiProduktu.PobierzProdukty()[indeksProduktuDoEdycji];
+
+    Console.WriteLine("Podaj nową nazwę produktu:");
+    produktDoEdycji.NazwaProduktu = Console.ReadLine();
+    Console.WriteLine("Produkt został edytowany.");
+    break;
 
                     case 6:
                         // Usuwanie produktu
