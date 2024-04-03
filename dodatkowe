@@ -14,34 +14,34 @@ public class Node
     }
 }
 
-public class BinaryTree
+public class Tree
 {
     private Node root;
 
-    public BinaryTree()
+    public Tree()
     {
         root = null;
     }
 
     public void Add(int value)
     {
-        root = AddRecursive(root, value);
+        root = AddRecursively(root, value);
     }
 
-    private Node AddRecursive(Node current, int value)
+    private Node AddRecursively(Node current, int value)
     {
         if (current == null)
         {
             return new Node(value);
         }
 
-        if (value % 2 == 0) // parzyste w lewym poddrzewie
+        if (value % 2 == 0)
         {
-            current.Left = AddRecursive(current.Left, value);
+            current.Left = AddRecursively(current.Left, value);
         }
-        else 
+        else
         {
-            current.Right = AddRecursive(current.Right, value);
+            current.Right = AddRecursively(current.Right, value);
         }
 
         return current;
@@ -49,10 +49,10 @@ public class BinaryTree
 
     public bool Contains(int value)
     {
-        return ContainsRecursive(root, value);
+        return ContainsRecursively(root, value);
     }
 
-    private bool ContainsRecursive(Node current, int value)
+    private bool ContainsRecursively(Node current, int value)
     {
         if (current == null)
         {
@@ -66,26 +66,26 @@ public class BinaryTree
 
         if (value < current.Value)
         {
-            return ContainsRecursive(current.Left, value);
+            return ContainsRecursively(current.Left, value);
         }
         else
         {
-            return ContainsRecursive(current.Right, value);
+            return ContainsRecursively(current.Right, value);
         }
     }
 
-    public void PrintTree()
+    public void Print()
     {
-        PrintTreeRecursive(root);
+        PrintRecursively(root);
     }
 
-    private void PrintTreeRecursive(Node current)
+    private void PrintRecursively(Node current)
     {
         if (current != null)
         {
-            PrintTreeRecursive(current.Left);
+            PrintRecursively(current.Left);
             Console.WriteLine(current.Value);
-            PrintTreeRecursive(current.Right);
+            PrintRecursively(current.Right);
         }
     }
 }
@@ -94,7 +94,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        BinaryTree tree = new BinaryTree();
+        Tree tree = new Tree();
         tree.Add(5);
         tree.Add(8);
         tree.Add(2);
@@ -103,7 +103,7 @@ class Program
         tree.Add(1);
 
         Console.WriteLine("Whole Tree:");
-        tree.PrintTree();
+        tree.Print();
 
         int searchValue = 6;
         if (tree.Contains(searchValue))
