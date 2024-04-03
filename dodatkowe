@@ -1,91 +1,134 @@
 using System;
 
-public class Node
+public class AVLNode
 {
     public int Value;
-    public Node Left;
-    public Node Right;
+    public int Height;
+    public AVLNode Left;
+    public AVLNode Right;
 
-    public Node(int value)
+    public AVLNode(int value)
     {
         Value = value;
+        Height = 1;
         Left = null;
         Right = null;
     }
 }
 
-public class Tree
+public class AVLTree
 {
-    private Node root;
+    private AVLNode root;
 
-    public Tree()
+    public AVLTree()
     {
         root = null;
     }
 
     public void Add(int value)
     {
-        root = AddRecursively(root, value);
+        root = AddRecursive(root, value);
     }
 
-    private Node AddRecursively(Node current, int value)
+    private AVLNode AddRecursive(AVLNode current, int value)
     {
         if (current == null)
         {
-            return new Node(value);
+            return new AVLNode(value);
         }
 
-        if (value % 2 == 0)
+        if (value < current.Value)
         {
-            current.Left = AddRecursively(current.Left, value);
+            current.Left = AddRecursive(current.Left, value);
         }
         else
         {
-            current.Right = AddRecursively(current.Right, value);
+            current.Right = AddRecursive(current.Right, value);
+        }
+
+        current.Height = 1 + Math.Max(Height(current.Left), Height(current.Right));
+
+        int balance = GetBalance(current);
+
+        // Left Left Case
+        if (balance > 1 && value < current.Left.Value)
+        {
+            return RightRotate(current);
+        }
+
+        // Right Right Case
+        if (balance < -1 && value > current.Right.Value)
+        {
+            return LeftRotate(current);
+        }
+
+        // Left Right Case
+        if (balance > 1 && value > current.Left.Value)
+        {
+            current.Left = LeftRotate(current.Left);
+            return RightRotate(current);
+        }
+
+        // Right Left Case
+        if (balance < -1 && value < current.Right.Value)
+        {
+            current.Right = RightRotate(current.Right);
+            return LeftRotate(current);
         }
 
         return current;
     }
 
-    public bool Contains(int value)
+    private int Height(AVLNode node)
     {
-        return ContainsRecursively(root, value);
+        return node == null ? 0 : node.Height;
     }
 
-    private bool ContainsRecursively(Node current, int value)
+    private int GetBalance(AVLNode node)
     {
-        if (current == null)
-        {
-            return false;
-        }
+        return node == null ? 0 : Height(node.Left) - Height(node.Right);
+    }
 
-        if (current.Value == value)
-        {
-            return true;
-        }
+    private AVLNode RightRotate(AVLNode y)
+    {
+        AVLNode x = y.Left;
+        AVLNode T2 = x.Right;
 
-        if (value < current.Value)
-        {
-            return ContainsRecursively(current.Left, value);
-        }
-        else
-        {
-            return ContainsRecursively(current.Right, value);
-        }
+        x.Right = y;
+        y.Left = T2;
+
+        y.Height = 1 + Math.Max(Height(y.Left), Height(y.Right));
+        x.Height = 1 + Math.Max(Height(x.Left), Height(x.Right));
+
+        return x;
+    }
+
+    private AVLNode LeftRotate(AVLNode x)
+    {
+        AVLNode y = x.Right;
+        AVLNode T2 = y.Left;
+
+        y.Left = x;
+        x.Right = T2;
+
+        x.Height = 1 + Math.Max(Height(x.Left), Height(x.Right));
+        y.Height = 1 + Math.Max(Height(y.Left), Height(y.Right));
+
+        return y;
     }
 
     public void Print()
     {
-        PrintRecursively(root);
+        PrintInOrder(root);
     }
 
-    private void PrintRecursively(Node current)
+    private void PrintInOrder(AVLNode node)
     {
-        if (current != null)
+        if (node != null)
         {
-            PrintRecursively(current.Left);
-            Console.WriteLine(current.Value);
-            PrintRecursively(current.Right);
+            PrintInOrder(node.Left);
+            Console.WriteLine(node.Value);
+            PrintInOrder(node.Right);
         }
     }
 }
@@ -94,25 +137,18 @@ class Program
 {
     static void Main(string[] args)
     {
-        Tree tree = new Tree();
-        tree.Add(5);
-        tree.Add(8);
-        tree.Add(2);
+        AVLTree tree = new AVLTree();
         tree.Add(9);
+        tree.Add(5);
+        tree.Add(10);
+        tree.Add(0);
         tree.Add(6);
+        tree.Add(11);
+        tree.Add(-1);
         tree.Add(1);
+        tree.Add(2);
 
-        Console.WriteLine("Whole Tree:");
+        Console.WriteLine("AVL Tree:");
         tree.Print();
-
-        int searchValue = 6;
-        if (tree.Contains(searchValue))
-        {
-            Console.WriteLine($"Tree contains {searchValue}.");
-        }
-        else
-        {
-            Console.WriteLine($"Tree does not contain {searchValue}.");
-        }
     }
 }
