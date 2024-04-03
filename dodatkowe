@@ -1,183 +1,118 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
-class Produkt
+public class Node
 {
-    public string Nazwa { get; set; }
-    public double Cena { get; set; }
-    public int Ilość { get; set; }
+    public int Value;
+    public Node Left;
+    public Node Right;
 
-    public void Informacje()
+    public Node(int value)
     {
-        Console.WriteLine($"Nazwa: {Nazwa}, Cena: {Cena}, Ilość: {Ilość}");
-    }
-
-    public static bool operator ==(Produkt produkt1, Produkt produkt2)
-    {
-        return produkt1.Cena == produkt2.Cena;
-    }
-
-    public static bool operator !=(Produkt produkt1, Produkt produkt2)
-    {
-        return !(produkt1 == produkt2);
-    }
-
-    public static bool operator <(Produkt produkt1, Produkt produkt2)
-    {
-        return produkt1.Cena < produkt2.Cena;
-    }
-
-    public static bool operator >(Produkt produkt1, Produkt produkt2)
-    {
-        return produkt1.Cena > produkt2.Cena;
-    }
-
-    public static Produkt operator ++(Produkt produkt)
-    {
-        produkt.Ilość++;
-        return produkt;
-    }
-
-    public static Produkt operator --(Produkt produkt)
-    {
-        produkt.Ilość--;
-        return produkt;
+        Value = value;
+        Left = null;
+        Right = null;
     }
 }
 
-class Magazyn
+public class BinaryTree
 {
-    public string Nazwa { get; set; }
-    public List<Produkt> Produkty { get; set; }
+    private Node root;
 
-    public Magazyn()
+    public BinaryTree()
     {
-        Produkty = new List<Produkt>();
+        root = null;
     }
 
-    public void WyświetlProdukty()
+    public void Add(int value)
     {
-        foreach (var produkt in Produkty)
+        root = AddRecursive(root, value);
+    }
+
+    private Node AddRecursive(Node current, int value)
+    {
+        if (current == null)
         {
-            produkt.Informacje();
+            return new Node(value);
+        }
+
+        if (value % 2 == 0) // parzyste w lewym poddrzewie
+        {
+            current.Left = AddRecursive(current.Left, value);
+        }
+        else 
+        {
+            current.Right = AddRecursive(current.Right, value);
+        }
+
+        return current;
+    }
+
+    public bool Contains(int value)
+    {
+        return ContainsRecursive(root, value);
+    }
+
+    private bool ContainsRecursive(Node current, int value)
+    {
+        if (current == null)
+        {
+            return false;
+        }
+
+        if (current.Value == value)
+        {
+            return true;
+        }
+
+        if (value < current.Value)
+        {
+            return ContainsRecursive(current.Left, value);
+        }
+        else
+        {
+            return ContainsRecursive(current.Right, value);
         }
     }
 
-    public void SortujProdukty()
+    public void PrintTree()
     {
-        Produkty = Produkty.OrderBy(p => p.Cena).ToList();
+        PrintTreeRecursive(root);
+    }
+
+    private void PrintTreeRecursive(Node current)
+    {
+        if (current != null)
+        {
+            PrintTreeRecursive(current.Left);
+            Console.WriteLine(current.Value);
+            PrintTreeRecursive(current.Right);
+        }
     }
 }
 
-class Macierz
+class Program
 {
-    private double[,] dane;
-
-    public Macierz(int wiersze, int kolumny)
+    static void Main(string[] args)
     {
-        dane = new double[wiersze, kolumny];
-    }
+        BinaryTree tree = new BinaryTree();
+        tree.Add(5);
+        tree.Add(8);
+        tree.Add(2);
+        tree.Add(9);
+        tree.Add(6);
+        tree.Add(1);
 
-    public double this[int i, int j]
-    {
-        get { return dane[i, j]; }
-        set { dane[i, j] = value; }
-    }
+        Console.WriteLine("Whole Tree:");
+        tree.PrintTree();
 
-    public static Macierz operator +(Macierz macierz1, Macierz macierz2)
-    {
-        int rows = macierz1.dane.GetLength(0);
-        int cols = macierz1.dane.GetLength(1);
-        Macierz result = new Macierz(rows, cols);
-
-        for (int i = 0; i < rows; i++)
+        int searchValue = 6;
+        if (tree.Contains(searchValue))
         {
-            for (int j = 0; j < cols; j++)
-            {
-                result[i, j] = macierz1[i, j] + macierz2[i, j];
-            }
+            Console.WriteLine($"Tree contains {searchValue}.");
         }
-
-        return result;
-    }
-
-    public static Macierz operator -(Macierz macierz1, Macierz macierz2)
-    {
-        int rows = macierz1.dane.GetLength(0);
-        int cols = macierz1.dane.GetLength(1);
-        Macierz result = new Macierz(rows, cols);
-
-        for (int i = 0; i < rows; i++)
+        else
         {
-            for (int j = 0; j < cols; j++)
-            {
-                result[i, j] = macierz1[i, j] - macierz2[i, j];
-            }
+            Console.WriteLine($"Tree does not contain {searchValue}.");
         }
-
-        return result;
-    }
-
-    public static Macierz operator *(Macierz macierz1, Macierz macierz2)
-    {
-        int rowsA = macierz1.dane.GetLength(0);
-        int colsA = macierz1.dane.GetLength(1);
-        int rowsB = macierz2.dane.GetLength(0);
-        int colsB = macierz2.dane.GetLength(1);
-
-        if (colsA != rowsB)
-        {
-            throw new ArgumentException("Liczba kolumn pierwszej macierzy musi być równa liczbie wierszy drugiej macierzy.");
-        }
-
-        Macierz result = new Macierz(rowsA, colsB);
-
-        for (int i = 0; i < rowsA; i++)
-        {
-            for (int j = 0; j < colsB; j++)
-            {
-                double sum = 0;
-                for (int k = 0; k < colsA; k++)
-                {
-                    sum += macierz1[i, k] * macierz2[k, j];
-                }
-                result[i, j] = sum;
-            }
-        }
-
-        return result;
-    }
-
-    public static Macierz operator ++(Macierz macierz)
-    {
-        int rows = macierz.dane.GetLength(0);
-        int cols = macierz.dane.GetLength(1);
-
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                macierz[i, j] += 2;
-            }
-        }
-
-        return macierz;
-    }
-
-    public static Macierz operator --(Macierz macierz)
-    {
-        int rows = macierz.dane.GetLength(0);
-        int cols = macierz.dane.GetLength(1);
-
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                macierz[i, j] -= 2;
-            }
-        }
-
-        return macierz;
     }
 }
