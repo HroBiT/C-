@@ -1,154 +1,27 @@
 using System;
 
-public class AVLNode
-{
-    public int Value;
-    public int Height;
-    public AVLNode Left;
-    public AVLNode Right;
-
-    public AVLNode(int value)
-    {
-        Value = value;
-        Height = 1;
-        Left = null;
-        Right = null;
-    }
-}
-
-public class AVLTree
-{
-    private AVLNode root;
-
-    public AVLTree()
-    {
-        root = null;
-    }
-
-    public void Add(int value)
-    {
-        root = AddRecursive(root, value);
-    }
-
-    private AVLNode AddRecursive(AVLNode current, int value)
-    {
-        if (current == null)
-        {
-            return new AVLNode(value);
-        }
-
-        if (value < current.Value)
-        {
-            current.Left = AddRecursive(current.Left, value);
-        }
-        else
-        {
-            current.Right = AddRecursive(current.Right, value);
-        }
-
-        current.Height = 1 + Math.Max(Height(current.Left), Height(current.Right));
-
-        int balance = GetBalance(current);
-
-        // Left Left Case
-        if (balance > 1 && value < current.Left.Value)
-        {
-            return RightRotate(current);
-        }
-
-        // Right Right Case
-        if (balance < -1 && value > current.Right.Value)
-        {
-            return LeftRotate(current);
-        }
-
-        // Left Right Case
-        if (balance > 1 && value > current.Left.Value)
-        {
-            current.Left = LeftRotate(current.Left);
-            return RightRotate(current);
-        }
-
-        // Right Left Case
-        if (balance < -1 && value < current.Right.Value)
-        {
-            current.Right = RightRotate(current.Right);
-            return LeftRotate(current);
-        }
-
-        return current;
-    }
-
-    private int Height(AVLNode node)
-    {
-        return node == null ? 0 : node.Height;
-    }
-
-    private int GetBalance(AVLNode node)
-    {
-        return node == null ? 0 : Height(node.Left) - Height(node.Right);
-    }
-
-    private AVLNode RightRotate(AVLNode y)
-    {
-        AVLNode x = y.Left;
-        AVLNode T2 = x.Right;
-
-        x.Right = y;
-        y.Left = T2;
-
-        y.Height = 1 + Math.Max(Height(y.Left), Height(y.Right));
-        x.Height = 1 + Math.Max(Height(x.Left), Height(x.Right));
-
-        return x;
-    }
-
-    private AVLNode LeftRotate(AVLNode x)
-    {
-        AVLNode y = x.Right;
-        AVLNode T2 = y.Left;
-
-        y.Left = x;
-        x.Right = T2;
-
-        x.Height = 1 + Math.Max(Height(x.Left), Height(x.Right));
-        y.Height = 1 + Math.Max(Height(y.Left), Height(y.Right));
-
-        return y;
-    }
-
-    public void Print()
-    {
-        PrintInOrder(root);
-    }
-
-    private void PrintInOrder(AVLNode node)
-    {
-        if (node != null)
-        {
-            PrintInOrder(node.Left);
-            Console.WriteLine(node.Value);
-            PrintInOrder(node.Right);
-        }
-    }
-}
-
-class Program
+class BinarySearchProgram
 {
     static void Main(string[] args)
     {
-        AVLTree tree = new AVLTree();
-        tree.Add(9);
-        tree.Add(5);
-        tree.Add(10);
-        tree.Add(0);
-        tree.Add(6);
-        tree.Add(11);
-        tree.Add(-1);
-        tree.Add(1);
-        tree.Add(2);
+        // Inicjalizacja posortowanej tablicy liczb całkowitych
+        int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-        Console.WriteLine("AVL Tree:");
-        tree.Print();
+        // Wprowadzenie poszukiwanej liczby przez użytkownika
+        Console.WriteLine("Wprowadź liczbę do wyszukania:");
+        int searchNumber = Convert.ToInt32(Console.ReadLine());
+
+        // Wyszukiwanie liczby w tablicy
+        int index = Array.BinarySearch(numbers, searchNumber);
+
+        // Wyświetlenie wyniku
+        if (index >= 0)
+        {
+            Console.WriteLine($"Liczba {searchNumber} została znaleziona na indeksie {index}.");
+        }
+        else
+        {
+            Console.WriteLine($"Liczba {searchNumber} nie została znaleziona w tablicy.");
+        }
     }
 }
