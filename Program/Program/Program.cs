@@ -4,7 +4,7 @@ using System.Linq;
 
 class Program
 {
-    static void Main()
+   static void Main()
     {
         while (true)
         {
@@ -14,10 +14,10 @@ class Program
             Console.WriteLine("2. Operacje na ciągach");
             Console.WriteLine("3. Wyjdź z programu");
 
-            if (!int.TryParse(Console.ReadLine(), out int choice))
+           if (!int.TryParse(Console.ReadLine(), out int choice))
             {
-                Console.WriteLine("Niepoprawny wybór, spróbuj ponownie.");
-                continue;
+               Console.WriteLine("Niepoprawny wybór, spróbuj ponownie.");
+               continue;
             }
 
             switch (choice)
@@ -31,22 +31,19 @@ class Program
                 case 3:
                     Environment.Exit(0);
                     break;
-                default:
-                    Console.WriteLine("Niepoprawny wybór, spróbuj ponownie.");
-                    break;
+               default:
+                   Console.WriteLine("Niepoprawny wybór, spróbuj ponownie.");
+                   break;
             }
         }
     }
 
     static void CalculateLogarithms()
     {
-        Console.Clear();
-        Console.WriteLine("Wpisz 'R', aby wrócić do menu głównego.");
+       Console.Clear();
         Console.WriteLine("Podaj działanie logarytmiczne do obliczenia ");
         string input = Console.ReadLine().Trim();
 
-        if (input.Equals("R", StringComparison.OrdinalIgnoreCase))
-            return;
 
         if (!TryParseLogarithm(input, out double result))
         {
@@ -55,7 +52,7 @@ class Program
             return;
         }
 
-        Console.WriteLine($"Wynik obliczeń: {result}");
+       Console.WriteLine($"Wynik obliczeń: {result}");
         Console.ReadLine();
     }
 
@@ -71,13 +68,13 @@ class Program
         {
             if (parts[0].StartsWith("log_"))
             {
-                if (double.TryParse(parts[0].Substring(4), out double baseNumber)))
+               if (double.TryParse(parts[0].Substring(4), out double baseNumber))
                 {
                     result = Math.Log(number, baseNumber);
                     return true;
                 }
             }
-            else if (parts[0].Equals("log", StringComparison.OrdinalIgnoreCase))
+           else if (parts[0].Equals("log", StringComparison.OrdinalIgnoreCase))
             {
                 result = Math.Log(number);
                 return true;
@@ -89,8 +86,7 @@ class Program
 
     static void CalculateSequence()
     {
-        Console.Clear();
-        Console.WriteLine("Wpisz 'R', aby wrócić do menu głównego.");
+       Console.Clear();
         Console.WriteLine("Podaj długość ciągu:");
 
         if (!int.TryParse(Console.ReadLine(), out int length) || length <= 0)
@@ -100,13 +96,13 @@ class Program
             return;
         }
 
-        Console.WriteLine("Podaj elementy ciągu:");
+       Console.WriteLine("Podaj elementy ciągu:");
 
         Dictionary<int, double> elements = new Dictionary<int, double>();
 
         for (int i = 1; i <= length; i++)
         {
-            Console.Write($"a_{i} = ");
+            Console.Write($"{i} = ");
             if (!double.TryParse(Console.ReadLine(), out double value))
             {
                 Console.WriteLine("Niepoprawna wartość. Spróbuj ponownie.");
@@ -116,7 +112,7 @@ class Program
             elements.Add(i, value);
         }
 
-        CalculateAndPrintSequence(elements);
+       CalculateAndPrintSequence(elements);
         Console.ReadLine();
     }
 
@@ -126,26 +122,18 @@ class Program
         string monotonicity = GetMonotonicity(elements);
 
         Console.WriteLine($"Typ ciągu: {sequenceType}");
-        Console.WriteLine($"Monotoniczność ciągu: {monotonicity}");
+        Console.WriteLine($"Monotonicznosc ciagu: {monotonicity}");
 
-        Console.WriteLine("Obliczone elementy ciągu:");
 
-        double commonDifference = elements[2] - elements[1];
 
-        for (int i = 1; i <= elements.Count; i++)
-        {
-            double element = elements.First().Value + (i - 1) * commonDifference;
-            Console.WriteLine($"a_{i} = {element}");
-        }
-
-        Console.WriteLine("Podaj numer indeksu (n) elementu, którego wartość chcesz poznać:");
+            Console.WriteLine("Podaj numer indeksu (n) elementu ktorego wartosc chcesz poznac:");
         if (!int.TryParse(Console.ReadLine(), out int index) || index < 1 || index > elements.Count)
         {
             Console.WriteLine("Niepoprawny numer indeksu. Spróbuj ponownie.");
             return;
         }
 
-        Console.WriteLine($"Wartość elementu a_{index} = {elements[index]}");
+        Console.WriteLine($"Wartosc elementu indexu {index} = {elements[index]}");
     }
 
     static double CalculateCommonDifference(Dictionary<int, double> elements)
@@ -219,10 +207,10 @@ class Program
         }
 
         if (isIncreasing)
-            return "rosnący";
+            return "rosnacy";
         else if (isDecreasing)
-            return "malejący";
+            return "malejacy";
         else
-            return "nierosnący/nemalejący";
+            return "nierosnący/nemlejacy";
     }
 }
