@@ -125,6 +125,17 @@ class Program
         Console.WriteLine($"Monotonicznosc ciagu: {monotonicity}");
 
 
+static double CalculateNthTermGeometric(double firstTerm, double commonRatio, int n)
+{
+    return firstTerm * Math.Pow(commonRatio, n - 1);
+}
+
+
+
+static double CalculateNthTermGeometric(double firstTerm, double commonRatio, int n)
+{
+    return firstTerm * Math.Pow(commonRatio, n - 1);
+}
 
             Console.WriteLine("Podaj numer indeksu (n) elementu ktorego wartosc chcesz poznac:");
         if (!int.TryParse(Console.ReadLine(), out int index) || index < 1 || index > elements.Count)
