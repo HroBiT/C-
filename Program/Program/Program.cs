@@ -71,7 +71,7 @@ class Program
         {
             if (parts[0].StartsWith("log_"))
             {
-                if (double.TryParse(parts[0].Substring(4), out double baseNumber))
+                if (double.TryParse(parts[0].Substring(4), out double baseNumber)))
                 {
                     result = Math.Log(number, baseNumber);
                     return true;
@@ -130,7 +130,6 @@ class Program
 
         Console.WriteLine("Obliczone elementy ciągu:");
 
-        // Obliczanie różnicy między kolejnymi elementami
         double commonDifference = elements[2] - elements[1];
 
         for (int i = 1; i <= elements.Count; i++)
@@ -148,7 +147,6 @@ class Program
 
         Console.WriteLine($"Wartość elementu a_{index} = {elements[index]}");
     }
-
 
     static double CalculateCommonDifference(Dictionary<int, double> elements)
     {
