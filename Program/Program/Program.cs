@@ -4,20 +4,20 @@ using System.Linq;
 
 class Program
 {
-   static void Main()
+    static void Main()
     {
         while (true)
         {
             Console.Clear();
-            Console.WriteLine("Wybierz co chcesz zrobić:");
+            Console.WriteLine("Wybierz co chcesz zrobic:");
             Console.WriteLine("1. Obliczenia logarytmiczne");
-            Console.WriteLine("2. Operacje na ciągach");
+            Console.WriteLine("2. Operacje na ciagach");
             Console.WriteLine("3. Wyjdź z programu");
 
-           if (!int.TryParse(Console.ReadLine(), out int choice))
+            if (!int.TryParse(Console.ReadLine(), out int choice))
             {
-               Console.WriteLine("Niepoprawny wybór, spróbuj ponownie.");
-               continue;
+                Console.WriteLine("Niepoprawny wybor, sprobuj ponownie.");
+                continue;
             }
 
             switch (choice)
@@ -31,28 +31,28 @@ class Program
                 case 3:
                     Environment.Exit(0);
                     break;
-               default:
-                   Console.WriteLine("Niepoprawny wybór, spróbuj ponownie.");
-                   break;
+                default:
+                    Console.WriteLine("Niepoprawny wybor, sprobuj ponownie.");
+                    break;
             }
         }
     }
 
     static void CalculateLogarithms()
     {
-       Console.Clear();
+        Console.Clear();
         Console.WriteLine("Podaj działanie logarytmiczne do obliczenia ");
         string input = Console.ReadLine().Trim();
 
 
         if (!TryParseLogarithm(input, out double result))
         {
-            Console.WriteLine("Niepoprawne wyrażenie logarytmiczne. Spróbuj ponownie.");
+            Console.WriteLine("Niepoprawne wyrazenie logarytmiczne. Sprobuj ponownie.");
             Console.ReadLine();
             return;
         }
 
-       Console.WriteLine($"Wynik obliczeń: {result}");
+        Console.WriteLine($"Wynik obliczen: {result}");
         Console.ReadLine();
     }
 
@@ -68,13 +68,13 @@ class Program
         {
             if (parts[0].StartsWith("log_"))
             {
-               if (double.TryParse(parts[0].Substring(4), out double baseNumber))
+                if (double.TryParse(parts[0].Substring(4), out double baseNumber))
                 {
                     result = Math.Log(number, baseNumber);
                     return true;
                 }
             }
-           else if (parts[0].Equals("log", StringComparison.OrdinalIgnoreCase))
+            else if (parts[0].Equals("log", StringComparison.OrdinalIgnoreCase))
             {
                 result = Math.Log(number);
                 return true;
@@ -86,17 +86,17 @@ class Program
 
     static void CalculateSequence()
     {
-       Console.Clear();
-        Console.WriteLine("Podaj długość ciągu:");
+        Console.Clear();
+        Console.WriteLine("Podaj długosc ciagu:");
 
         if (!int.TryParse(Console.ReadLine(), out int length) || length <= 0)
         {
-            Console.WriteLine("Niepoprawna długość ciągu. Spróbuj ponownie.");
+            Console.WriteLine("Niepoprawna długosc ciagu. Sprobuj ponownie.");
             Console.ReadLine();
             return;
         }
 
-       Console.WriteLine("Podaj elementy ciągu:");
+        Console.WriteLine("Podaj elementy ciagu:");
 
         Dictionary<int, double> elements = new Dictionary<int, double>();
 
@@ -105,14 +105,14 @@ class Program
             Console.Write($"{i} = ");
             if (!double.TryParse(Console.ReadLine(), out double value))
             {
-                Console.WriteLine("Niepoprawna wartość. Spróbuj ponownie.");
+                Console.WriteLine("Niepoprawna wartosc. Sprobuj ponownie.");
                 i--;
                 continue;
             }
             elements.Add(i, value);
         }
 
-       CalculateAndPrintSequence(elements);
+        CalculateAndPrintSequence(elements);
         Console.ReadLine();
     }
 
@@ -121,42 +121,20 @@ class Program
         string sequenceType = GetSequenceType(elements);
         string monotonicity = GetMonotonicity(elements);
 
-        Console.WriteLine($"Typ ciągu: {sequenceType}");
+        Console.WriteLine($"Typ ciagu: {sequenceType}");
         Console.WriteLine($"Monotonicznosc ciagu: {monotonicity}");
 
 
-static double CalculateNthTermGeometric(double firstTerm, double commonRatio, int n)
-{
-    return firstTerm * Math.Pow(commonRatio, n - 1);
-}
 
-static bool CheckGeometricSequence(Dictionary<int, double> elements)
-{
-    double firstTerm = elements[1];
-    double commonRatio = elements[2] / elements[1];
 
-    for (int i = 3; i <= elements.Count; i++)
-    {
-        if (elements[i] != CalculateNthTermGeometric(firstTerm, commonRatio, i))
-            return false;
-    }
-
-    return true;
-}
-
-static double CalculateNthTermGeometric(double firstTerm, double commonRatio, int n)
-{
-    return firstTerm * Math.Pow(commonRatio, n - 1);
-}
-
-            Console.WriteLine("Podaj numer indeksu (n) elementu ktorego wartosc chcesz poznac:");
+        Console.WriteLine("Podaj numer indeksu (n) elementu ktorego wartosc chcesz poznac:");
         if (!int.TryParse(Console.ReadLine(), out int index) || index < 1 || index > elements.Count)
         {
-            Console.WriteLine("Niepoprawny numer indeksu. Spróbuj ponownie.");
+            Console.WriteLine("Niepoprawny numer indeksu. Sprobuj ponownie.");
             return;
         }
 
-        Console.WriteLine($"Wartosc elementu indexu {index} = {elements[index]}");
+        Console.WriteLine($"Wartosc elementu indexu {index} ' go  jest rowna {elements[index]}");
     }
 
     static double CalculateCommonDifference(Dictionary<int, double> elements)
@@ -195,43 +173,47 @@ static double CalculateNthTermGeometric(double firstTerm, double commonRatio, in
             return "inny";
     }
 
+
+
+    static double CalculateGeometric(double firstTerm, double commonRatio, int n)
+    {
+        return firstTerm * Math.Pow(commonRatio, n - 1);
+    }
+
+    static double CalculateArithmetic(double firstTerm, double commonDifference, int n)
+    {
+        return firstTerm + (n - 1) * commonDifference;
+    }
+
     static bool CheckArithmeticSequence(Dictionary<int, double> elements)
     {
         double commonDifference = CalculateCommonDifference(elements);
+        double firstTerm = elements[1];
+
         for (int i = 3; i <= elements.Count; i++)
         {
-            if (elements[i] - elements[i - 1] != commonDifference)
+            if (elements[i] != CalculateArithmetic(firstTerm, commonDifference, i))
                 return false;
         }
+
         return true;
     }
+
 
     static bool CheckGeometricSequence(Dictionary<int, double> elements)
     {
+        double firstTerm = elements[1];
         double commonRatio = elements[2] / elements[1];
+
         for (int i = 3; i <= elements.Count; i++)
         {
-            if (elements[i] / elements[i - 1] != commonRatio)
+            if (elements[i] != CalculateGeometric(firstTerm, commonRatio, i))
                 return false;
         }
+
         return true;
     }
 
-
-
-static bool CheckArithmeticSequence(Dictionary<int, double> elements)
-{
-    double commonDifference = CalculateCommonDifference(elements);
-    double firstTerm = elements[1];
-
-    for (int i = 3; i <= elements.Count; i++)
-    {
-        if (elements[i] != CalculateNthTermArithmetic(firstTerm, commonDifference, i))
-            return false;
-    }
-
-    return true;
-}
     static string GetMonotonicity(Dictionary<int, double> elements)
     {
         bool isIncreasing = true;
@@ -249,6 +231,6 @@ static bool CheckArithmeticSequence(Dictionary<int, double> elements)
         else if (isDecreasing)
             return "malejacy";
         else
-            return "nierosnący/nemlejacy";
+            return "nierosnacy/nemlejacy";
     }
 }
