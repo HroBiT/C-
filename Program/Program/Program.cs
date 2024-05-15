@@ -217,6 +217,21 @@ static double CalculateNthTermGeometric(double firstTerm, double commonRatio, in
         return true;
     }
 
+
+
+static bool CheckArithmeticSequence(Dictionary<int, double> elements)
+{
+    double commonDifference = CalculateCommonDifference(elements);
+    double firstTerm = elements[1];
+
+    for (int i = 3; i <= elements.Count; i++)
+    {
+        if (elements[i] != CalculateNthTermArithmetic(firstTerm, commonDifference, i))
+            return false;
+    }
+
+    return true;
+}
     static string GetMonotonicity(Dictionary<int, double> elements)
     {
         bool isIncreasing = true;
