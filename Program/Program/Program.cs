@@ -130,7 +130,19 @@ static double CalculateNthTermGeometric(double firstTerm, double commonRatio, in
     return firstTerm * Math.Pow(commonRatio, n - 1);
 }
 
+static bool CheckGeometricSequence(Dictionary<int, double> elements)
+{
+    double firstTerm = elements[1];
+    double commonRatio = elements[2] / elements[1];
 
+    for (int i = 3; i <= elements.Count; i++)
+    {
+        if (elements[i] != CalculateNthTermGeometric(firstTerm, commonRatio, i))
+            return false;
+    }
+
+    return true;
+}
 
 static double CalculateNthTermGeometric(double firstTerm, double commonRatio, int n)
 {
