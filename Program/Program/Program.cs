@@ -10,8 +10,8 @@ class Program
         {
             Console.Clear();
             Console.WriteLine("Wybierz co chcesz zrobić:");
-            Console.WriteLine("1. Obliczenia arytmetyczne lub geometryczne");
-            Console.WriteLine("2. Obliczenia logarytmiczne");
+            Console.WriteLine("1. Obliczenia logarytmiczne");
+            Console.WriteLine("2. Operacje na ciągach");
             Console.WriteLine("3. Wyjdź z programu");
 
             if (!int.TryParse(Console.ReadLine(), out int choice))
@@ -23,10 +23,10 @@ class Program
             switch (choice)
             {
                 case 1:
-                    CalculateSequence();
+                    CalculateLogarithms();
                     break;
                 case 2:
-                    CalculateLogarithms();
+                    CalculateSequence();
                     break;
                 case 3:
                     Environment.Exit(0);
@@ -78,33 +78,6 @@ class Program
     static void CalculateSequence()
     {
         Console.Clear();
-        Console.WriteLine("Wybierz typ ciągu do obliczeń:");
-        Console.WriteLine("1. Arytmetyczny");
-        Console.WriteLine("2. Geometryczny");
-
-        if (!int.TryParse(Console.ReadLine(), out int choice))
-        {
-            Console.WriteLine("Niepoprawny wybór, spróbuj ponownie.");
-            return;
-        }
-
-        switch (choice)
-        {
-            case 1:
-                CalculateArithmeticSequence();
-                break;
-            case 2:
-                CalculateGeometricSequence();
-                break;
-            default:
-                Console.WriteLine("Niepoprawny wybór, spróbuj ponownie.");
-                break;
-        }
-    }
-
-    static void CalculateArithmeticSequence()
-    {
-        Console.Clear();
         Console.WriteLine("Podaj długość ciągu:");
 
         if (!int.TryParse(Console.ReadLine(), out int length) || length <= 0)
@@ -130,44 +103,13 @@ class Program
             elements.Add(i, value);
         }
 
-        CalculateAndPrintSequence(elements, "arytmetyczny");
+        CalculateAndPrintSequence(elements);
         Console.ReadLine();
     }
 
-    static void CalculateGeometricSequence()
+    static void CalculateAndPrintSequence(Dictionary<int, double> elements)
     {
-        Console.Clear();
-        Console.WriteLine("Podaj długość ciągu:");
-
-        if (!int.TryParse(Console.ReadLine(), out int length) || length <= 0)
-        {
-            Console.WriteLine("Niepoprawna długość ciągu. Spróbuj ponownie.");
-            Console.ReadLine();
-            return;
-        }
-
-        Console.WriteLine("Podaj elementy ciągu:");
-
-        Dictionary<int, double> elements = new Dictionary<int, double>();
-
-        for (int i = 1; i <= length; i++)
-        {
-            Console.Write($"{i} = ");
-            if (!double.TryParse(Console.ReadLine(), out double value))
-            {
-                Console.WriteLine("Niepoprawna wartość. Spróbuj ponownie.");
-                i--;
-                continue;
-            }
-            elements.Add(i, value);
-        }
-
-        CalculateAndPrintSequence(elements, "geometryczny");
-        Console.ReadLine();
-    }
-
-    static void CalculateAndPrintSequence(Dictionary<int, double> elements, string sequenceType)
-    {
+        string sequenceType = GetSequenceType(elements);
         string monotonicity = GetMonotonicity(elements);
 
         Console.WriteLine($"Typ ciągu: {sequenceType}");
@@ -181,6 +123,56 @@ class Program
         }
 
         Console.WriteLine($"Wartość elementu o indeksie {index}: {elements[index]}");
+    }
+
+    static string GetSequenceType(Dictionary<int, double> elements)
+    {
+        bool isArithmetic = CheckArithmeticSequence(elements);
+        bool isGeometric = CheckGeometricSequence(elements);
+
+        if (isArithmetic)
+            return "arytmetyczny";
+        else if (isGeometric)
+            return "geometryczny";
+        else
+            return "inny";
+    }
+
+    static bool CheckArithmeticSequence(Dictionary<int, double> elements)
+    {
+        double commonDifference = CalculateCommonDifference(elements);
+        double firstTerm = elements[1];
+
+        for (int i = 3; i <= elements.Count; i++)
+        {
+            if (elements[i] != firstTerm + (i - 1) * commonDifference)
+                return false;
+        }
+
+        return true;
+    }
+
+    static bool CheckGeometricSequence(Dictionary<int, double> elements)
+    {
+        double commonRatio = elements[2] / elements[1];
+
+        for (int i = 3; i <= elements.Count; i++)
+        {
+            if (elements[i] != elements[1] * Math.Pow(commonRatio, i - 1))
+                return false;
+        }
+
+        return true;
+    }
+
+    static double CalculateCommonDifference(Dictionary<int, double> elements)
+    {
+        if (elements.Count < 2)
+            return 0.0;
+
+        double commonDifference = elements[2] - elements[1];
+
+        return commonDifference;
     }
 
     static string GetMonotonicity(Dictionary<int, double> elements)
