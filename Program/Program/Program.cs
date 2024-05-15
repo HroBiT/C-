@@ -1,5 +1,5 @@
 
-ausing System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -40,41 +40,21 @@ class Program
     }
 
     static void CalculateLogarithms()
-{
-    Console.Clear();
-    Console.WriteLine("Podaj działanie logarytmiczne do obliczenia (np. log_2(16)=4):");
-    string input = Console.ReadLine().Trim();
-
-    if (!TryParseLogarithm(input, out double result))
     {
-        Console.WriteLine("Niepoprawne wyrażenie logarytmiczne. Spróbuj ponownie.");
-        Console.ReadLine();
-        return;
-    }
+        Console.Clear();
+        Console.WriteLine("Podaj działanie logarytmiczne do obliczenia (np. log_2(16)=4):");
+        string input = Console.ReadLine().Trim();
 
-    Console.WriteLine($"Wynik obliczeń: {result}");
-    Console.ReadLine();
-}
-
-static bool TryParseLogarithm(string expression, out double result)
-{
-    result = 0.0;
-    string[] parts = expression.Split(new[] { '=', '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
-
-    if (parts.Length != 3)
-        return false;
-
-    if (parts[0].StartsWith("log_"))
-    {
-        if (double.TryParse(parts[1], out double baseNumber) && double.TryParse(parts[2], out double exponent))
+        if (!TryParseLogarithm(input, out double result))
         {
-            result = Math.Pow(baseNumber, exponent);
-            return true;
+            Console.WriteLine("Niepoprawne wyrażenie logarytmiczne. Spróbuj ponownie.");
+            Console.ReadLine();
+            return;
         }
-    }
 
-    return false;
-}
+        Console.WriteLine($"Wynik obliczeń: {result}");
+        Console.ReadLine();
+    }
 
     static bool TryParseLogarithm(string expression, out double result)
     {
@@ -158,51 +138,43 @@ static bool TryParseLogarithm(string expression, out double result)
     }
 
     static double CalculateCommonDifference(Dictionary<int, double> elements)
-{
-    if (elements.Count < 2)
-        return 0.0;
-
-    double commonDifference = 0.0;
-
-    // Sprawdź, czy ciąg jest arytmetyczny
-    bool isArithmetic = true;
-    for (int i = 3; i <= elements.Count; i++)
     {
-        if (elements[i] - elements[i - 1] != elements[2] - elements[1])
+        if (elements.Count < 2)
+            return 0.0;
+
+        double commonDifference = 0.0;
+        bool isArithmetic = true;
+        for (int i = 3; i <= elements.Count; i++)
         {
-            isArithmetic = false;
-            break;
+            if (elements[i] - elements[i - 1] != elements[2] - elements[1])
+            {
+                isArithmetic = false;
+                break;
+            }
         }
-    }
+        if (isArithmetic)
+        {
+            commonDifference = elements[2] - elements[1];
+            return commonDifference;
+        }
 
-    // Jeśli ciąg jest arytmetyczny, zwróć różnicę
-    if (isArithmetic)
-    {
-        commonDifference = elements[2] - elements[1];
+        bool isGeometric = true;
+        for (int i = 3; i <= elements.Count; i++)
+        {
+            if (elements[i] / elements[i - 1] != elements[2] / elements[1])
+            {
+                isGeometric = false;
+                break;
+            }
+        }
+
+        if (isGeometric)
+        {
+            commonDifference = elements[2] / elements[1];
+            return commonDifference;
+        }
         return commonDifference;
     }
-
-    // Sprawdź, czy ciąg jest geometryczny
-    bool isGeometric = true;
-    for (int i = 3; i <= elements.Count; i++)
-    {
-        if (elements[i] / elements[i - 1] != elements[2] / elements[1])
-        {
-            isGeometric = false;
-            break;
-        }
-    }
-
-    // Jeśli ciąg jest geometryczny, zwróć iloraz
-    if (isGeometric)
-    {
-        commonDifference = elements[2] / elements[1];
-        return commonDifference;
-    }
-
-    // Jeśli ciąg nie jest ani arytmetyczny, ani geometryczny, zwróć 0
-    return commonDifference;
-}
 
 
     static string GetSequenceType(Dictionary<int, double> elements)
