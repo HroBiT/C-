@@ -41,12 +41,12 @@ class Program
     static void CalculateLogarithms()
     {
         Console.Clear();
-        Console.WriteLine("Podaj działanie logarytmiczne do obliczenia (np. log_2(16)=4):");
+        Console.WriteLine("Podaj działanie do obliczenia (np. log_2(16)=4):");
         string input = Console.ReadLine().Trim();
 
-        if (!TryParseLogarithm(input, out double result))
+        if (!TryParseExpression(input, out double result))
         {
-            Console.WriteLine("Niepoprawne wyrażenie logarytmiczne. Spróbuj ponownie.");
+            Console.WriteLine("Niepoprawne wyrażenie. Spróbuj ponownie.");
             Console.ReadLine();
             return;
         }
@@ -55,7 +55,7 @@ class Program
         Console.ReadLine();
     }
 
-    static bool TryParseLogarithm(string expression, out double result)
+    static bool TryParseExpression(string expression, out double result)
     {
         result = 0.0;
         string[] parts = expression.Split(new[] { '=', '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
