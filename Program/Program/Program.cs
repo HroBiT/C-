@@ -1,4 +1,5 @@
-using System;
+
+ausing System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -157,27 +158,52 @@ static bool TryParseLogarithm(string expression, out double result)
     }
 
     static double CalculateCommonDifference(Dictionary<int, double> elements)
+{
+    if (elements.Count < 2)
+        return 0.0;
+
+    double commonDifference = 0.0;
+
+    // Sprawdź, czy ciąg jest arytmetyczny
+    bool isArithmetic = true;
+    for (int i = 3; i <= elements.Count; i++)
     {
-        if (elements.Count < 2)
-            return 0.0;
-
-        double commonDifference = 0.0;
-        int index = 1;
-
-        foreach (var kvp in elements.OrderBy(kvp => kvp.Key))
+        if (elements[i] - elements[i - 1] != elements[2] - elements[1])
         {
-            if (index == 1)
-            {
-                index++;
-                continue;
-            }
-
-            commonDifference += (kvp.Value - elements.ElementAt(index - 1).Value);
-            index++;
+            isArithmetic = false;
+            break;
         }
-
-        return commonDifference / (elements.Count - 1);
     }
+
+    // Jeśli ciąg jest arytmetyczny, zwróć różnicę
+    if (isArithmetic)
+    {
+        commonDifference = elements[2] - elements[1];
+        return commonDifference;
+    }
+
+    // Sprawdź, czy ciąg jest geometryczny
+    bool isGeometric = true;
+    for (int i = 3; i <= elements.Count; i++)
+    {
+        if (elements[i] / elements[i - 1] != elements[2] / elements[1])
+        {
+            isGeometric = false;
+            break;
+        }
+    }
+
+    // Jeśli ciąg jest geometryczny, zwróć iloraz
+    if (isGeometric)
+    {
+        commonDifference = elements[2] / elements[1];
+        return commonDifference;
+    }
+
+    // Jeśli ciąg nie jest ani arytmetyczny, ani geometryczny, zwróć 0
+    return commonDifference;
+}
+
 
     static string GetSequenceType(Dictionary<int, double> elements)
     {
