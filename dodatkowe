@@ -8,7 +8,7 @@ class BinarySearchProgram
         int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
         // Wprowadzenie poszukiwanej liczby przez użytkownika
-        Console.WriteLine("Wprowadź liczbę do wyszukania:");
+        Console.WriteLine("Wprowadź l iczbę do wyszukania:");
         int searchNumber = Convert.ToInt32(Console.ReadLine());
 
         // Wyszukiwanie liczby w tablicy
